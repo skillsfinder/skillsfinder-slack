@@ -6,7 +6,7 @@ let hmac;
 const getSignature = req => {
   const slackSigningSecret = functions.config().slack.signingsecret;
   hmac = crypto.createHmac("sha256", slackSigningSecret);
-  const timestamp = req.headers["X-Slack-Request-Timestamp"];
+  const timestamp = req.headers["x-slack-request-timestamp"];
   const sig_basestring =
     "v0:" + timestamp + ":" + querystring.stringify(req.body);
   hmac.update(sig_basestring);
@@ -15,7 +15,7 @@ const getSignature = req => {
 };
 
 const validator = req => {
-  const slack_signature = Buffer.from(req.headers["X-Slack-Signature"]);
+  const slack_signature = Buffer.from(req.headers["x-slack-signature"]);
   const my_signature = getSignature(req);
   return crypto.timingSafeEqual(slack_signature, my_signature);
 };
