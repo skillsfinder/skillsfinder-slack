@@ -1,12 +1,13 @@
 const validator = require("../src/request-validator");
 const querystring = require("querystring");
+const functions = require("firebase-functions");
+jest.mock("firebase-functions");
 
 describe("request validator", () => {
   beforeEach(() => {
-    process.env.SLACK_SIGNING_SECRET = "8f742231b10e8888abcd99yyyzzz85a5";
-  });
-  afterEach(() => {
-    delete process.env.SLACK_SIGNING_SECRET;
+    functions.config.mockReturnValue({
+      slack: { signingsecret: "8f742231b10e8888abcd99yyyzzz85a5" }
+    });
   });
 
   it("validates the logic on validator", () => {
