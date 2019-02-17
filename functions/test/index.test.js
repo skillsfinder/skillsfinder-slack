@@ -25,7 +25,9 @@ describe("index", () => {
 
       myFunctions = require("../index");
 
-      req = { body: { user_name: "jona", text: "skill" } };
+      req = {
+        body: { user_name: "jona", text: "skill", command: "/addskill" }
+      };
       req.method = "POST";
       req.headers = {};
       req.headers["transfer-encoding"] = "utf-8";
@@ -36,6 +38,7 @@ describe("index", () => {
         res.statusCode = statusCode;
         return res;
       };
+      res.end = jest.fn();
     });
 
     afterEach(() => {

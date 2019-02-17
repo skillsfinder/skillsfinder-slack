@@ -7,22 +7,23 @@ admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
 exports.addSkill = functions.https.onRequest((req, res) =>
-  validatorMiddleware(req, res, () =>
-    bodyParser(req, res, () => {
-      if (req.method === "POST") {
-        const username = req.body.user_name;
-        const text = req.body.text;
+  bodyParser(req, res, () => {
+    if (req.body.command) {
+      return validatorMiddleware(req, res, () => {
+        if (req.method === "POST") {
+          const username = req.body.user_name;
+          const text = req.body.text;
 
-        return db
-          .collection("users")
-          .doc(username)
-          .set({ skill: text })
-          .then(snapshot =>
-            res.status(200).send(`Successful added skill ${snapshot.skill}`)
-          );
-      }
+          return db
+            .collection("users")
+            .doc(username)
+            .set({ skill: text })
+            .then(() => res.status(200).send(`Successful added skill ${text}`));
+        }
 
-      return res.status(500).end();
-    })
-  )
+        return res.status(500).send("Expected a POST request");
+      });
+    }
+    return res.status(200).end();
+  })
 );
