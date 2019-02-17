@@ -1,6 +1,8 @@
 const admin = require("firebase-admin");
 const test = require("firebase-functions-test")();
+const validatorMiddleware = require("../src/validator-middleware");
 jest.mock("firebase-admin");
+jest.mock("../src/validator-middleware");
 
 describe("index", () => {
   describe("addSkill", () => {
@@ -19,6 +21,7 @@ describe("index", () => {
       };
 
       admin.firestore = jest.fn().mockReturnValue(db);
+      validatorMiddleware.mockImplementation((req, res, next) => next());
 
       myFunctions = require("../index");
 
