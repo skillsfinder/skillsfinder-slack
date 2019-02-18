@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - "8"
+  - "10"
+before_install: cd functions
+install: npm install
+script: npm run test
+before_deploy: cd ..
+deploy:
+  provider: firebase
+  token:
+    secure: "pXpVKq/vtaZ3pr+GB5rv2fvexBRVBMDiQc/+w+rEcCYs6B2ykNmozn9HDFSaCkdZWQkMfDqmCqz1K07hTWX2AQgOzc0nGKCwVFKK8VXinjrcst5525FuFwBPMmIAWsAuDoLcguHz6ITRP+a0jbWs8iun6W3I3xessnlutr8bmZ7NjzduLBLLTQgOi+2F42gDITNhUgDBpgPK7SzVxas8owM8wB5uNEymV0hdya5PzUWbLcbHh5054OVjxtr2Flzjto8cIZZGz1y10xfhgxbnicq6dFN5qGo3hTNVfxxtE8hXSLPoT/5UrGHFn1iqVBtpEG73WafonK/9cfpl/e9Iq2iagaCmZLNL98ka8omY6FdESDg/GzUB6OPRQyjnME+8BO4VlOvH+SsRpHooiY/6Ia7ABtP4p/w6pqkgYukO5JxDyi4hNjozLE6JyZpfkX9m5acTcHsGmrV9r14mlNv5YjnAH3qHYQI3U/7wOQXVFIwJG1ue6/Vi+qEqQ1CQGnYgIaK31z4dPn1YHzNYNF7JdnM64wznrfG9JLOKznqLjR/OVCrpp0Pege/oTXhRv8Xe5UXA3Vj+UAB/uf8F+2Ss2W6j1OGz43ztwtFdz/j+e54daOWHEcy5yZ8dtYBgmth6Kw8KH5b8OYmQ6RTto/nlufxUO2BE/0lLOnVju1K0hNM="
+  on:
+    branch: master
+    node: "8"
+  skip_cleanup: true
