@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/skillsfinder/skillsfinder-slack.svg?branch=master)](https://travis-ci.org/skillsfinder/skillsfinder-slack)
+
 # SkillsFinder
 
 Slack App to spread user skills across the workspace.
