@@ -1,68 +1,58 @@
-const admin = require("firebase-admin");
 const test = require("firebase-functions-test")();
+const bodyParser = require("body-parser");
 const validatorMiddleware = require("../src/validator-middleware");
-jest.mock("firebase-admin");
+const addSkillDB = require("../src/addskill-db");
+
+jest.mock("body-parser", () => ({ urlencoded: jest.fn() }));
 jest.mock("../src/validator-middleware");
+jest.mock("../src/addskill-db");
 
 describe("index", () => {
   describe("addSkill", () => {
-    let myFunctions, setFn, docFn, req, res;
+    let myFunctions, req, res, addSkillDBMock;
 
     beforeEach(() => {
-      admin.initializeApp.mockReturnValue();
-
-      setFn = jest.fn().mockResolvedValue({ skill: "skill" });
-      docFn = jest.fn().mockReturnValue({ set: setFn });
-
-      const db = {
-        collection: () => ({
-          doc: docFn
-        })
-      };
-
-      admin.firestore = jest.fn().mockReturnValue(db);
+      bodyParser.urlencoded.mockReturnValue((req, res, next) => next());
+      addSkillDBMock = jest.fn();
+      addSkillDB.mockReturnValue(addSkillDBMock);
       validatorMiddleware.mockImplementation((req, res, next) => next());
 
       myFunctions = require("../index");
 
-      req = {
-        body: { user_name: "jona", text: "skill", command: "/addskill" }
-      };
-      req.method = "POST";
-      req.headers = {};
-      req.headers["transfer-encoding"] = "utf-8";
-
-      res = {};
-      res.statusCode = 500;
-      res.status = statusCode => {
-        res.statusCode = statusCode;
-        return res;
-      };
-      res.end = jest.fn();
+      req = mockedReq();
+      res = mockRes();
     });
 
     afterEach(() => {
       test.cleanup();
     });
 
-    it("responds 200 only on POST verb", done => {
-      res.send = () => {
-        expect(res.statusCode).toBe(200);
-        done();
-      };
-
+    it("saves response on database when requirements are met", () => {
       myFunctions.addSkill(req, res);
+
+      expect(addSkillDBMock).toBeCalled();
     });
 
-    it("adds user and skill to database", done => {
-      res.send = message => {
-        expect(message).toEqual("Successful added skill skill");
-        expect(docFn).toBeCalledWith("jona");
-        expect(setFn).toBeCalledWith({ skill: "skill" });
-        done();
-      };
-
+    it("returns 200 code and does not save to database when command param is not present", () => {
+      delete req.body.command;
       myFunctions.addSkill(req, res);
+
+      expect(res.status).toBeCalledWith(200);
     });
   });
 });
+
+const mockedReq = () => {
+  const req = {
+    body: { user_name: "jona", text: "skill", command: "/addskill" }
+  };
+  req.method = "POST";
+  return req;
+};
+
+const mockRes = () => {
+  const res = {};
+  res.status = jest.fn(() => res);
+  res.end = jest.fn(() => res);
+  return res;
+};
