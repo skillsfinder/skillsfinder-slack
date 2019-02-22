@@ -8,8 +8,6 @@ const init = () => {
     const {
       team_id,
       team_domain,
-      enterprise_id,
-      enterprise_name,
       channel_id,
       channel_name,
       user_id,
@@ -25,7 +23,7 @@ const init = () => {
     return db
       .collection("workspaces")
       .doc(team_id)
-      .set({ team_domain, enterprise_id, enterprise_name })
+      .set({ team_domain })
       .collection("users")
       .doc(user_id)
       .set({ user_name, skills: { [text]: { [text]: true, score: 0 } } })
