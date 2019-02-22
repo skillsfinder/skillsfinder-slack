@@ -20,6 +20,8 @@ const init = () => {
       trigger_id
     } = req.body;
 
+    console.log(req.body);
+
     return db
       .collection("workspaces")
       .doc(team_id)
