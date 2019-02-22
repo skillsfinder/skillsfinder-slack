@@ -8,8 +8,8 @@ describe("addskill-db", () => {
   let req, res, set;
   beforeEach(() => {
     admin.initializeApp.mockReturnValue();
-    set = jest.fn().mockResolvedValue();
-    const db = mockDB(set);
+    const db = mockDB();
+    set = db.set = jest.fn(() => db);
 
     admin.firestore = jest.fn().mockReturnValue(db);
 
@@ -57,10 +57,10 @@ const mockRes = () => {
   return res;
 };
 
-const mockDB = set => {
+const mockDB = () => {
   const db = {};
   db.collection = jest.fn(() => db);
   db.doc = jest.fn(() => db);
-  db.set = set;
+  db.then = jest.fn().mockResolvedValue();
   return db;
 };
