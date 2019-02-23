@@ -28,7 +28,10 @@ const init = () => {
         doc
           .collection("users")
           .doc(user_id)
-          .set({ user_name, skills: { [text]: { [text]: true, score: 0 } } })
+          .set(
+            { user_name, skills: { [text]: { [text]: true, score: 0 } } },
+            { merge: true }
+          )
       )
       .then(() => res.status(200).send(`Successful added skill ${text}`));
   };
