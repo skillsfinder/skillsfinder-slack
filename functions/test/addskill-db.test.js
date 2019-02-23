@@ -9,7 +9,7 @@ describe("addskill-db", () => {
   beforeEach(() => {
     admin.initializeApp.mockReturnValue();
     const db = mockDB();
-    set = db.set = jest.fn(() => db);
+    set = db.set = jest.fn(() => Promise.resolve());
 
     admin.firestore = jest.fn().mockReturnValue(db);
 
@@ -23,10 +23,15 @@ describe("addskill-db", () => {
 
   it("calls set in document", () => {
     return addSkillDB()(req, res).then(() => {
-      expect(set).toBeCalledWith({
-        skills: { myskill: { score: 0, myskill: true } },
+      const firstResult = { team_domain: "my-team" };
+
+      const secondResult = {
+        skills: { myskill: { myskill: true, score: 0 } },
         user_name: "jona"
-      });
+      };
+
+      expect(set.mock.calls[0][0]).toEqual(firstResult);
+      expect(set.mock.calls[1][0]).toEqual(secondResult);
     });
   });
 });
@@ -38,7 +43,8 @@ const mockedReq = () => {
       user_id: "jona",
       text: "myskill",
       command: "/addskill",
-      team_id: "CODE"
+      team_id: "CODE",
+      team_domain: "my-team"
     }
   };
   req.method = "POST";
@@ -61,6 +67,5 @@ const mockDB = () => {
   const db = {};
   db.collection = jest.fn(() => db);
   db.doc = jest.fn(() => db);
-  db.then = jest.fn().mockResolvedValue();
   return db;
 };
