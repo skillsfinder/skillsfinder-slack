@@ -2,31 +2,33 @@ const test = require("firebase-functions-test")();
 const bodyParser = require("body-parser");
 const validatorMiddleware = require("../src/validator-middleware");
 const addSkillDB = require("../src/addskill-db");
+const getSkillDB = require("../src/getskill-db");
 
 jest.mock("body-parser", () => ({ urlencoded: jest.fn() }));
 jest.mock("../src/validator-middleware");
 jest.mock("../src/addskill-db");
+jest.mock("../src/getskill-db");
 
 describe("index", () => {
-  describe("addSkill", () => {
-    let myFunctions, req, res, addSkillDBMock;
-
-    beforeEach(() => {
-      bodyParser.urlencoded.mockReturnValue((req, res, next) => next());
-      addSkillDBMock = jest.fn();
-      addSkillDB.mockReturnValue(addSkillDBMock);
-      validatorMiddleware.mockImplementation((req, res, next) => next());
-
+  let addSkillDBMock, getSkillDBMock, myFunctions, req, res;
+  beforeEach(() => {
+    bodyParser.urlencoded.mockReturnValue((req, res, next) => next());
+    validatorMiddleware.mockImplementation((req, res, next) => next());
+    addSkillDBMock = jest.fn();
+    addSkillDB.mockReturnValue(addSkillDBMock);
+    getSkillDBMock = jest.fn();
+    getSkillDB.mockReturnValue(getSkillDBMock);
+    jest.isolateModules(() => {
       myFunctions = require("../index");
-
-      req = mockedReq();
-      res = mockRes();
     });
+    req = mockedReq();
+    res = mockRes();
+  });
+  afterEach(() => {
+    test.cleanup();
+  });
 
-    afterEach(() => {
-      test.cleanup();
-    });
-
+  describe("addSkill", () => {
     it("saves response on database when requirements are met", () => {
       myFunctions.addSkill(req, res);
 
@@ -40,11 +42,26 @@ describe("index", () => {
       expect(res.status).toBeCalledWith(200);
     });
   });
+
+  describe("getSkill", () => {
+    it("saves response on database when requirements are met", () => {
+      myFunctions.getSkill(req, res);
+
+      return expect(getSkillDBMock).toBeCalled();
+    });
+
+    it("returns 200 code and does not save to database when command param is not present", () => {
+      delete req.body.command;
+      myFunctions.getSkill(req, res);
+
+      expect(res.status).toBeCalledWith(200);
+    });
+  });
 });
 
 const mockedReq = () => {
   const req = {
-    body: { user_name: "jona", text: "skill", command: "/addskill" }
+    body: { user_name: "jona", text: "skill", command: "/somecommand" }
   };
   req.method = "POST";
   return req;
