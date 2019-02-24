@@ -24,7 +24,7 @@ const init = () => {
       .doc(user_id)
       .get()
       .then(doc => {
-        const list = Object.keys(doc.data().skills).map(v => `* ${v}\n`);
+        const list = Object.keys(doc.data().skills).map(v => `• ${v}\n`);
         res.send(`Skills:\n${list.join("")}`);
       });
   };

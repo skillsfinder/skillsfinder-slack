@@ -21,7 +21,7 @@ describe("getskill-db", () => {
 
   it("sends a list with skills", () => {
     return getSkillDB()(req, res).then(() => {
-      const result = "Skills:\n* myskill\n* myskill1\n";
+      const result = "Skills:\n• myskill\n• myskill1\n";
       expect(res.send).toBeCalledWith(result);
     });
   });
