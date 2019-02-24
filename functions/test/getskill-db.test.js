@@ -55,15 +55,19 @@ const mockRes = () => {
 };
 
 const mockDB = req => {
-  const db = {};
-  db.collection = jest.fn(() => db);
-  db.doc = jest.fn(() => db);
-  db.get = jest.fn().mockResolvedValue({
+  const data = {
     skills: {
       [req.body.text]: { [req.body.text]: true, score: 0 },
       [req.body.text + 1]: { [req.body.text + 1]: true, score: 0 }
     },
     user_name: req.body.user_name
-  });
+  };
+  const db = {};
+  db.collection = jest.fn(() => db);
+  db.doc = jest.fn(() => db);
+  const snapshot = {
+    data: jest.fn(() => data)
+  };
+  db.get = jest.fn().mockResolvedValue(snapshot);
   return db;
 };
