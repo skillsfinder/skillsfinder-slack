@@ -31,7 +31,11 @@ const init = () => {
 
     return getSkillByUser(required_user_id, team_id).then(doc => {
       const list = Object.keys(doc.data().skills).map(v => `• ${v}\n`);
-      res.send(`Skills:\n${list.join("")}`);
+      const message =
+        required_user_id == user_id
+          ? `Skills:\n${list.join("")}`
+          : `Skills of ${doc.data().user_name}:\n${list.join("")}`;
+      res.send(message);
     });
   };
 

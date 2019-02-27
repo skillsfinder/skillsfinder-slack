@@ -38,7 +38,7 @@ describe("getskill-db", () => {
     admin.firestore = jest.fn().mockReturnValue(db);
 
     return getSkillDB()(req, res).then(() => {
-      const result = `Skills:\n• ${skill.U012ABCDEF[0]}\n• ${
+      const result = `Skills of juan:\n• ${skill.U012ABCDEF[0]}\n• ${
         skill.U012ABCDEF[1]
       }\n`;
       expect(res.send).toBeCalledWith(result);
@@ -84,7 +84,7 @@ const mockDB = req => {
       [skill[user_id][0]]: { [skill[user_id][0]]: true, score: 0 },
       [skill[user_id][1]]: { [skill[user_id][1]]: true, score: 0 }
     },
-    user_name: req.body.user_name
+    user_name: "juan"
   };
   const db = {};
   db.collection = jest.fn(() => db);
