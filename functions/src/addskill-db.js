@@ -1,5 +1,5 @@
 const init = () => {
-  const db = require("./database");
+  const db = require("./database")();
 
   const addSkillDB = (req, res) => {
     const {
@@ -15,7 +15,7 @@ const init = () => {
       trigger_id
     } = req.body;
 
-    console.log(req.body);
+    console.log("addskill", req.body);
 
     const doc = db.collection("workspaces").doc(team_id);
 

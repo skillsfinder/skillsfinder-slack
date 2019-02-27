@@ -1,5 +1,13 @@
 const init = () => {
-  const db = require("./database");
+  const db = require("./database")();
+
+  const getSkillByUser = (user_id, team_id) =>
+    db
+      .collection("workspaces")
+      .doc(team_id)
+      .collection("users")
+      .doc(user_id)
+      .get();
 
   const getSkillDB = (req, res) => {
     const {
@@ -17,16 +25,14 @@ const init = () => {
 
     console.log("getskill", req.body);
 
-    return db
-      .collection("workspaces")
-      .doc(team_id)
-      .collection("users")
-      .doc(user_id)
-      .get()
-      .then(doc => {
-        const list = Object.keys(doc.data().skills).map(v => `• ${v}\n`);
-        res.send(`Skills:\n${list.join("")}`);
-      });
+    let required_user_id = user_id;
+    const userReg = /<@([WU][0-9A-Z]+)>/;
+    if (text && text.match(userReg)) required_user_id = text.match(userReg)[1];
+
+    return getSkillByUser(required_user_id, team_id).then(doc => {
+      const list = Object.keys(doc.data().skills).map(v => `• ${v}\n`);
+      res.send(`Skills:\n${list.join("")}`);
+    });
   };
 
   return getSkillDB;
