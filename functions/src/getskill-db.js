@@ -26,7 +26,7 @@ const init = () => {
     console.log("getskill", req.body);
 
     let required_user_id = user_id;
-    const userReg = /<@([WU][0-9A-Z]+)>/;
+    const userReg = /<@([WU][0-9A-Z]+)\|?\S*>/;
     if (text && text.match(userReg)) required_user_id = text.match(userReg)[1];
 
     return getSkillByUser(required_user_id, team_id).then(doc => {

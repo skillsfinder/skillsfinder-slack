@@ -33,7 +33,7 @@ describe("getskill-db", () => {
   });
 
   it("sends a list with other user skills", () => {
-    req.body.text = "<@U012ABCDEF>";
+    req.body.text = "<@U012ABCDEF|joyarzun>";
     const db = mockDB(req);
     admin.firestore = jest.fn().mockReturnValue(db);
 
@@ -74,7 +74,7 @@ const mockRes = () => {
 
 const mockDB = req => {
   let user_id = "me";
-  const userReg = /<@([WU][0-9A-Z]+)>/;
+  const userReg = /<@([WU][0-9A-Z]+)\|?\S*>/;
   if (req.body.text && req.body.text.match(userReg)) {
     user_id = req.body.text.match(userReg)[1];
   }
