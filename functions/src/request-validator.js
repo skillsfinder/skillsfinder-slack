@@ -1,4 +1,4 @@
-const querystring = require("querystring");
+const qs = require("qs");
 const crypto = require("crypto");
 const functions = require("firebase-functions");
 let hmac;
@@ -8,7 +8,7 @@ const getSignature = req => {
   hmac = crypto.createHmac("sha256", slackSigningSecret);
   const timestamp = req.headers["x-slack-request-timestamp"];
   const sig_basestring =
-    "v0:" + timestamp + ":" + querystring.stringify(req.body);
+    "v0:" + timestamp + ":" + qs.stringify(req.body, { format: "RFC1738" });
   hmac.update(sig_basestring);
   const my_signature = "v0=" + hmac.digest("hex");
   console.log("my_signature", my_signature);
