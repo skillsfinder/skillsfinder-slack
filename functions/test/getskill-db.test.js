@@ -1,6 +1,11 @@
 const skill = {
-  me: ["myskill", "myskill1"],
-  U012ABCDEF: ["others-skills", "others-skills1"]
+  me: ["myskill", "myskill1", "my skill", "my skill1"],
+  U012ABCDEF: [
+    "others-skills",
+    "others-skills1",
+    "other skill",
+    "others skills1"
+  ]
 };
 
 describe("getskill-db", () => {
@@ -27,7 +32,7 @@ describe("getskill-db", () => {
 
   it("sends a list with my own skills", () => {
     return getSkillDB()(req, res).then(() => {
-      const result = `Skills:\n• ${skill.me[0]}\n• ${skill.me[1]}\n`;
+      const result = `Skills:\n• ${skill.me[2]}\n• ${skill.me[3]}\n`;
       expect(res.send).toBeCalledWith(result);
     });
   });
@@ -38,8 +43,8 @@ describe("getskill-db", () => {
     admin.firestore = jest.fn().mockReturnValue(db);
 
     return getSkillDB()(req, res).then(() => {
-      const result = `Skills of juan:\n• ${skill.U012ABCDEF[0]}\n• ${
-        skill.U012ABCDEF[1]
+      const result = `Skills of juan:\n• ${skill.U012ABCDEF[2]}\n• ${
+        skill.U012ABCDEF[3]
       }\n`;
       expect(res.send).toBeCalledWith(result);
     });
@@ -81,8 +86,16 @@ const mockDB = req => {
 
   const data = {
     skills: {
-      [skill[user_id][0]]: { [skill[user_id][0]]: true, score: 0 },
-      [skill[user_id][1]]: { [skill[user_id][1]]: true, score: 0 }
+      [skill[user_id][0]]: {
+        [skill[user_id][0]]: true,
+        score: 0,
+        name: skill[user_id][2]
+      },
+      [skill[user_id][1]]: {
+        [skill[user_id][1]]: true,
+        score: 0,
+        name: skill[user_id][3]
+      }
     },
     user_name: "juan"
   };
