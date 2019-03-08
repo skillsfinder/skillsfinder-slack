@@ -44,7 +44,7 @@ describe("index", () => {
   });
 
   describe("getSkill", () => {
-    it("saves response on database when requirements are met", () => {
+    it("calls getSkilldb when a valid request comes to /getskill", () => {
       myFunctions.getSkill(req, res);
 
       return expect(getSkillDBMock).toBeCalled();
