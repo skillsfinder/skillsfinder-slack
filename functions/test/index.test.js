@@ -3,11 +3,13 @@ const bodyParser = require("body-parser");
 const validatorMiddleware = require("../src/validator-middleware");
 const addSkillDB = require("../src/addskill-db");
 const getSkillDB = require("../src/getskill-db");
+const getPeopleSkillDB = require("../src/getpeopleskill-db");
 
 jest.mock("body-parser", () => ({ urlencoded: jest.fn() }));
 jest.mock("../src/validator-middleware");
 jest.mock("../src/addskill-db");
 jest.mock("../src/getskill-db");
+jest.mock("../src/getpeopleskill-db");
 
 describe("index", () => {
   let addSkillDBMock, getSkillDBMock, myFunctions, req, res;
@@ -18,6 +20,8 @@ describe("index", () => {
     addSkillDB.mockReturnValue(addSkillDBMock);
     getSkillDBMock = jest.fn();
     getSkillDB.mockReturnValue(getSkillDBMock);
+    getPeopleSkillDBMock = jest.fn();
+    getPeopleSkillDB.mockReturnValue(getPeopleSkillDBMock);
     jest.isolateModules(() => {
       myFunctions = require("../index");
     });
@@ -55,6 +59,14 @@ describe("index", () => {
       myFunctions.getSkill(req, res);
 
       expect(res.status).toBeCalledWith(200);
+    });
+  });
+
+  describe("getPeopleSkill", () => {
+    it("calls getPeopleSkill when a valid request comes", () => {
+      myFunctions.getPeopleSkill(req, res);
+
+      return expect(getPeopleSkillDBMock).toBeCalled();
     });
   });
 });
