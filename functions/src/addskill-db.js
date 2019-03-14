@@ -1,3 +1,5 @@
+const slugify = require("slugify");
+
 const init = () => {
   const db = require("./database")();
 
@@ -17,6 +19,7 @@ const init = () => {
 
     console.log("addskill", req.body);
 
+    const slug = slugify(text, { lower: true });
     const doc = db.collection("workspaces").doc(team_id);
 
     return doc
@@ -26,11 +29,16 @@ const init = () => {
           .collection("users")
           .doc(user_id)
           .set(
-            { user_name, skills: { [text]: { [text]: true, score: 0 } } },
+            {
+              user_name,
+              skills: {
+                [slug]: { [slug]: true, score: 0, name: text.toLowerCase() }
+              }
+            },
             { merge: true }
           )
       )
-      .then(() => res.status(200).send(`Successful added skill ${text}`));
+      .then(() => res.status(200).send(`Successful added skill: ${text}`));
   };
 
   return addSkillDB;

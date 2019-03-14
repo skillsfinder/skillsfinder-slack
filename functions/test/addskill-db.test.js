@@ -1,12 +1,16 @@
-const admin = require("firebase-admin");
-const test = require("firebase-functions-test")();
-const addSkillDB = require("../src/addskill-db");
-
-jest.mock("firebase-admin");
+// const admin = require("firebase-admin");
+// const test = require("firebase-functions-test")();
+// const addSkillDB = require("../src/addskill-db");
 
 describe("addskill-db", () => {
-  let req, res, set;
+  let req, res, set, admin, test, addSkillDB;
   beforeEach(() => {
+    jest.resetModules();
+    admin = require("firebase-admin");
+    test = require("firebase-functions-test")();
+    addSkillDB = require("../src/addskill-db");
+    jest.mock("firebase-admin");
+
     admin.initializeApp.mockReturnValue();
     const db = mockDB();
     set = db.set = jest.fn(() => Promise.resolve());
@@ -26,12 +30,27 @@ describe("addskill-db", () => {
       const firstResult = { team_domain: "my-team" };
 
       const secondResult = {
-        skills: { myskill: { myskill: true, score: 0 } },
+        skills: { myskill: { myskill: true, score: 0, name: "myskill" } },
         user_name: "jona"
       };
 
       expect(set.mock.calls[0][0]).toEqual(firstResult);
       expect(set.mock.calls[1][0]).toEqual(secondResult);
+    });
+  });
+
+  it("adds a skill with spaces and upper", () => {
+    req.body.text = "My Skill";
+
+    return addSkillDB()(req, res).then(() => {
+      const result = {
+        skills: {
+          "my-skill": { "my-skill": true, score: 0, name: "my skill" }
+        },
+        user_name: "jona"
+      };
+
+      expect(set.mock.calls[1][0]).toEqual(result);
     });
   });
 });
