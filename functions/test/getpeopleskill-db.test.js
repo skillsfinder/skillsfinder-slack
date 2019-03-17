@@ -4,7 +4,7 @@ const skill = {
 };
 
 describe("getpeopleskill-db", () => {
-  let req, res, getPeopleSkillDB, admin, test;
+  let req, res, getPeopleSkillDB, admin, test, db;
 
   beforeEach(() => {
     jest.resetModules();
@@ -16,7 +16,7 @@ describe("getpeopleskill-db", () => {
     req = mockedReq();
     res = mockRes();
 
-    const db = mockDB(req);
+    db = mockDB(req);
     admin.firestore = jest.fn().mockReturnValue(db);
     getPeopleSkillDB = require("../src/getpeopleskill-db");
   });
@@ -29,6 +29,12 @@ describe("getpeopleskill-db", () => {
     return getPeopleSkillDB()(req, res).then(() => {
       const result = `Found users that match skill myskill:\n• me things\n• other things`;
       expect(res.send).toBeCalledWith(result);
+    });
+  });
+
+  it("calls where function with correct params", () => {
+    return getPeopleSkillDB()(req, res).then(() => {
+      expect(db.where).toBeCalledWith("skills.myskill.myskill", "==", true);
     });
   });
 });

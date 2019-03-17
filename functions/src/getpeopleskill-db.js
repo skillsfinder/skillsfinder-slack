@@ -6,7 +6,7 @@ const init = () => {
       .collection("workspaces")
       .doc(team_id)
       .collection("users")
-      .where(`skill.${skill}.${skill}`, "==", true)
+      .where(`skills.${skill}.${skill}`, "==", true)
       .get();
 
   const getPeopleSkillDB = (req, res) => {
