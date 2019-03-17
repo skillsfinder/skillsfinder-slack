@@ -26,14 +26,23 @@ const init = () => {
     console.log("getpeopleskill", req.body);
 
     const skill = text;
+    let message;
+
+    if (skill == "") {
+      message = "Please send a skill. Ej: /getpeopleskill myskill";
+      return Promise.resolve(res.send(message));
+    }
 
     return getPeopleSkillBySkill(skill, team_id).then(docs => {
       const users = docs.docs.reduce(
         (acc, curr) => `${acc}\n• ${curr.data().user_name}`,
         ""
       );
-      const message = `Found users that match skill ${skill}:${users}`;
-      res.send(message);
+      message = `Found users that match skill ${skill}:${users}`;
+      if (users == "")
+        message = "There is no coincidence. Please try with a similar word";
+
+      return res.send(message);
     });
   };
 

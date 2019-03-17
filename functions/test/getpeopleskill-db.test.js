@@ -37,6 +37,28 @@ describe("getpeopleskill-db", () => {
       expect(db.where).toBeCalledWith("skills.myskill.myskill", "==", true);
     });
   });
+
+  it("responds a error message when getpeopleskill it called with no params", () => {
+    req.body.text = "";
+    db = mockDB(req);
+    admin.firestore = jest.fn().mockReturnValue(db);
+    getPeopleSkillDB = require("../src/getpeopleskill-db");
+    return getPeopleSkillDB()(req, res).then(() => {
+      const result = "Please send a skill. Ej: /getpeopleskill myskill";
+      expect(res.send).toBeCalledWith(result);
+    });
+  });
+
+  it("responds an error message when there is no match against the database", () => {
+    db = mockDB(req);
+    db.get = jest.fn().mockResolvedValue({ docs: [] });
+    admin.firestore = jest.fn().mockReturnValue(db);
+    getPeopleSkillDB = require("../src/getpeopleskill-db");
+    return getPeopleSkillDB()(req, res).then(() => {
+      const result = "There is no coincidence. Please try with a similar word";
+      expect(res.send).toBeCalledWith(result);
+    });
+  });
 });
 
 const mockedReq = () => {
